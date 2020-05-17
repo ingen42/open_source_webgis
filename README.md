@@ -1,24 +1,15 @@
-# open_source_webgis
+## 基于Vue的开源WebGIS解决方案
 
-## Project setup
-```
-npm install
-```
+总结学习和工作经验，项目未完成，持续更新中。。。
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### 技术栈
 
-### Compiles and minifies for production
-```
-npm run build
-```
++ Vue-cli 4.3.1
++ OpenLayers 6.3.1
++ Mapbox-GL 1.10.0
++ Turf 5.1.6
 
-### Lints and fixes files
-```
-npm run lint
-```
+### 线上预览地址
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+https://ingen42.github.io/open_source_webgis/dist/index.html#/ol/home
+
