@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header>顶部</el-header>
+      <el-header height="60px">开源WebGIS</el-header>
       <el-container>
         <el-aside width="200px">
           <el-menu class="el-menu-demo" :unique-opened="true">
@@ -11,8 +11,8 @@
                 <span>Leaflet</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="1-1">选项一</el-menu-item>
-                <el-menu-item index="1-2">选项二</el-menu-item>
+                <el-menu-item index="1-1">地图瓦片</el-menu-item>
+                <el-menu-item index="1-2">数据图层</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="2">
@@ -21,7 +21,9 @@
                 <span>OpenLayers</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="2-1">选项一</el-menu-item>
+                <router-link to="/ol/home">
+                  <el-menu-item index="2-1">瓦片底图</el-menu-item>
+                </router-link>
                 <el-menu-item index="2-2">选项二</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
@@ -32,7 +34,21 @@
               </template>
               <el-menu-item-group>
                 <router-link to="/mapboxgl/home">
-                  <el-menu-item index="1-1">选项一</el-menu-item>
+                  <el-menu-item index="1-1">瓦片底图</el-menu-item>
+                </router-link>
+                <router-link to="/about">
+                  <el-menu-item index="1-2">关于</el-menu-item>
+                </router-link>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span>Turf空间分析</span>
+              </template>
+              <el-menu-item-group>
+                <router-link to="/turf/home">
+                  <el-menu-item index="1-1">基本</el-menu-item>
                 </router-link>
                 <router-link to="/about">
                   <el-menu-item index="1-2">选项二</el-menu-item>
@@ -40,7 +56,6 @@
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
-
         </el-aside>
         <el-main>
           <router-view/>
@@ -89,7 +104,6 @@ a {
   background: #D3DCE6;
   color: #333;
 }
-
 </style>
 
 <style>
