@@ -1,5 +1,6 @@
 <template>
   <div id="map">
+    <div id="mousePosition"></div>
     <div id="optContainer">
       <div id="layerSelect">
         <el-select v-model="value" @change="changeLayer" placeholder="选择图层">
@@ -9,20 +10,26 @@
           </el-option-group>
         </el-select>
       </div>
+      <div id="mapInfo">
+        <el-tag type="info">缩放等级：{{mapInfo.zoomLevel}}</el-tag><br>
+        <el-tag type="info">中心坐标：{{mapInfo.center}}</el-tag>
+      </div>
     </div>
-
   </div>  
 </template>
 
 <script>
 import 'ol/ol.css'
-import * as ol from 'ol'
+import Map from 'ol/Map'
+import View from 'ol/View'
 import { transform } from "ol/proj";
 import TileLayer from 'ol/layer/Tile'
-// import ImageLayer from "ol/layer/Image";
 import { OSM, TileArcGISRest } from "ol/source"
 import BingMaps from "ol/source/BingMaps"
 import XYZ from 'ol/source/XYZ'
+import { defaults as defaultControls, Attribution, ZoomToExtent, OverviewMap, MousePosition } from 'ol/control'
+import {createStringXY} from 'ol/coordinate'
+import {getBottomLeft, getTopRight} from 'ol/extent'
 export default {
   data () {
     return {
@@ -50,6 +57,11 @@ export default {
           label: 'ArcGIS MapServer'
         }]
       }],
+      mapInfo: {
+        zoomLevel: Number,
+        center: Object,
+        mousePosition: Object 
+      }
     }
   },
   mounted(){
@@ -57,20 +69,60 @@ export default {
   },
   methods:{
     init(){
-      this.map = new ol.Map({
+      let attribution = new Attribution({
+        collapsible: true,
+      })
+      let zoomToExtent = new ZoomToExtent({
+        extent: [
+          transform([114.064839,35.548857], "EPSG:4326", "EPSG:3857")[0],
+          transform([114.064839,35.548857], "EPSG:4326", "EPSG:3857")[1],
+          transform([114.964839,35.948857], "EPSG:4326", "EPSG:3857")[0],
+          transform([114.964839,35.948857], "EPSG:4326", "EPSG:3857")[1]
+        ]
+      })
+      let overview = new OverviewMap({
+        layers: [
+          new TileLayer({
+            source: new OSM()
+          })
+        ]
+      })
+      let mousePosition = new MousePosition({
+        coordinateFormat: createStringXY(4),
+        projection: 'EPSG:4326',
+        target: document.getElementById('mouse-position'),
+        undefinedHTML: '&nbsp;'
+      })
+      this.map = new Map({
         target: 'map',
         layers: [
           new TileLayer({
             source: new OSM()
           })
         ],
-        view: new ol.View({
+        controls: defaultControls({attribution: false}).extend([
+          attribution,
+          zoomToExtent,
+          overview,
+          mousePosition
+        ]),
+        view: new View({
           projection: "EPSG:3857",
           center: transform([114.064839,35.548857], "EPSG:4326", "EPSG:3857"),
           zoom: 4,
           maxZoom: 18,
           minZoom: 2
         })
+      })
+      this.map.on('moveend',() => {
+        let extent = this.map.getView().calculateExtent(this.map.getSize())
+        let bottomLeft = getBottomLeft(extent)
+        let topRight = getTopRight(extent)
+        let center = this.map.getView().getCenter()
+        let zoomLevel = this.map.getView().getZoom()
+        // let resolution = this.map.getView().getResolutionForZoom(zoomLevel)
+        this.mapInfo.zoomLevel = zoomLevel.toFixed(2)
+        this.mapInfo.center = transform(center, "EPSG:3857", "EPSG:4326")
       })
     },
     changeLayer(e){
