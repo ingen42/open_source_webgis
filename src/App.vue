@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header height="60px">开源WebGIS</el-header>
+      <el-header height="60px">WebGIS</el-header>
       <el-container>
         <el-aside width="200px">
           <el-menu class="el-menu-demo" :unique-opened="true">
@@ -11,7 +11,9 @@
                 <span>Leaflet</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="1-1">地图瓦片</el-menu-item>
+                <router-link to="/leaflet/home">
+                  <el-menu-item index="1-1">地图瓦片</el-menu-item>
+                </router-link>
                 <el-menu-item index="1-2">数据图层</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
@@ -41,7 +43,7 @@
                 </router-link>
               </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="3">
+            <el-submenu index="4">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>Turf空间分析</span>

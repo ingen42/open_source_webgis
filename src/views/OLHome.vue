@@ -1,20 +1,23 @@
 <template>
   <div id="map">
-    <div id="layerSelect">
-      <el-select v-model="value" @change="changeLayer" placeholder="选择图层">
-        <el-option-group v-for="group in layers" :key="group.label" :label="group.label">
-          <el-option v-for="layer in group.options" :key="layer.value" :label="layer.label" :value="layer.value">
-          </el-option>
-        </el-option-group>
-      </el-select>
+    <div id="optContainer">
+      <div id="layerSelect">
+        <el-select v-model="value" @change="changeLayer" placeholder="选择图层">
+          <el-option-group v-for="group in layers" :key="group.label" :label="group.label">
+            <el-option v-for="layer in group.options" :key="layer.value" :label="layer.label" :value="layer.value">
+            </el-option>
+          </el-option-group>
+        </el-select>
+      </div>
     </div>
+
   </div>  
 </template>
 
 <script>
 import 'ol/ol.css'
 import * as ol from 'ol'
-// import transforms from "ol/proj/transforms";
+import { transform } from "ol/proj";
 import TileLayer from 'ol/layer/Tile'
 // import ImageLayer from "ol/layer/Image";
 import { OSM, TileArcGISRest } from "ol/source"
@@ -46,7 +49,7 @@ export default {
           value: 'ArcGIS',
           label: 'ArcGIS MapServer'
         }]
-      }]
+      }],
     }
   },
   mounted(){
@@ -62,10 +65,9 @@ export default {
           })
         ],
         view: new ol.View({
-          projection: "EPSG:4326",
-          center: [121.064839,32.548857], 
-          // center: transforms([114.064839,22.548857], "EPSG:4326", "EPSG:3857"),
-          zoom: 5,
+          projection: "EPSG:3857",
+          center: transform([114.064839,35.548857], "EPSG:4326", "EPSG:3857"),
+          zoom: 4,
           maxZoom: 18,
           minZoom: 2
         })
@@ -86,7 +88,6 @@ export default {
     },
     removeAllLayers(){
       var layers = this.map.getLayers().array_
-      console.log(layers)
       for(var i=0; i < layers.length; i++) {
       this.map.removeLayer(layers[i])
       }
@@ -111,7 +112,6 @@ export default {
     },
     swtich2Gaode(type){
       this.removeAllLayers()
-      // this.map.removeLayer(this.map.getLayers().item(0))
       if(type == 'GaodeVector') {
         let GaodeVectorLayer = new TileLayer({
           source: new XYZ({
@@ -154,10 +154,13 @@ export default {
     width: 100%;
     height: 100%;
   }
-  #layerSelect {
+  #optContainer {
     position: absolute;
     z-index: 99;
     top: 65px;
     right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 </style>
